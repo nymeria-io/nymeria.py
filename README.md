@@ -19,11 +19,11 @@ $ pip install nymeria
 #### Set and Check an API Key.
 
 ```python
-import nymeria
+from nymeria import api
 
-client = nymeria.Client('ny_apikey')
+client = api.Client('ny_apikey')
 
-client.check_authentication() # => 'OK!'
+client.check_authentication() # => True | False
 ```
 
 All API endpoints assume an api key has been set. You should set the api key
