@@ -1,8 +1,11 @@
 import urllib3
 import json
 
+USER_AGENT = 'nymeria.py/1.0.0'
+
 def request(endpoint, key='', version='v3', payload=None):
     headers = {
+            'User-Agent': USER_AGENT,
             'Content-Type': 'application/json',
             'X-Api-Key': key,
     }
