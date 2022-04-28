@@ -82,4 +82,9 @@ class Client:
             if resp['status'] == 'success':
                 return { 'data': resp['data'], 'usage': resp['usage'] }
 
-        return { 'result': 'unknown', 'tags': [] }
+        message = 'An unknown error ocurred'
+
+        if 'developer_message' in resp:
+            message = resp['developer_message']
+
+        return { 'result': 'unknown', 'tags': [], 'message': message }
