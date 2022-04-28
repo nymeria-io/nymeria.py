@@ -1,5 +1,7 @@
 # Nymeria
 
+[![PyPI version](https://badge.fury.io/py/nymeria.svg)](https://badge.fury.io/py/nymeria)
+
 The official python package to interact with the Nymeria service and API.
 
 Nymeria makes it easy to enrich data with contact information such as email
