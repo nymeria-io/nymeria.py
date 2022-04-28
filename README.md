@@ -33,22 +33,80 @@ requests.
 #### Verify an Email Address
 
 ```python
-# TODO
+from nymeria import api
+
+client = api.Client('ny_apikey')
+
+if client.check_authentication():
+  client.verify('foo@bar.com') # => dict (see below)
+```
+
+```json
+{
+  'data': {
+    'result': 'catchall',
+    'tags': ['has_dns', 'has_dns_mx', 'smtp_connectable', 'accepts_all', 'has_dns']
+  },
+
+  'usage': {
+    'used': 861,
+    'limit': 10000
+  }
+}
 ```
 
 #### Enrich a Profile
 
 ```python
-# TODO
+from nymeria import api
+
+client = api.Client('ny_apikey')
+
+# Single Enrichment
+
+if client.check_authentication():
+  client.enrich({ 'url': 'linkedin.com/in/wozniaksteve' }) # => dict (see below)
+
+  # Bulk Enrichment (pass n-queries to enrich)
+
+  client.enrich({ 'email': 'woz@steve.org' }, { 'url': 'github.com/dhh' }) # => dict (see below)
 ```
 
-The enrich API works on a profile by profile basis. If you need to enrich
-multiple profiles at once you can use the bulk enrichment API.
-
-#### Bulk Enrichment
-
-```python
-# TODO
+```json
+{
+  "usage": {
+    "used": 4,
+    "limit": 100
+  },
+  "data": {
+    "bio": {
+      "first_name": "Steve",
+      "last_name": "Wozniak",
+      "title": "Chief Scientist",
+      "company": "Sandisk",
+      "company_website": "sandisk.com"
+    },
+    "emails": [
+      {
+        "type": "professional",
+        "name": "steve",
+        "domain": "woz.org",
+        "address": "steve@woz.org"
+      },
+			...
+    ],
+    "phone_numbers": [
+			...
+    ],
+    "social": [
+      {
+        "type": "linkedin",
+        "id": "wozniaksteve",
+        "url": "https://www.linkedin.com/in/wozniaksteve"
+      }
+    ]
+  }
+}
 ```
 
 ## License
