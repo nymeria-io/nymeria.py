@@ -1,0 +1,4 @@
+dist/
+nymeria.egg-info/
+
+*.pyc
