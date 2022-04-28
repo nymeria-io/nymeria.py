@@ -7,7 +7,6 @@ pkgs.mkShell {
   # May be required:
   #
   # pip install setuptools
-  # pip install wheel
   #
 
   nativeBuildInputs = with pkgs; [
