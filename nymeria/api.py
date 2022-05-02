@@ -1,7 +1,7 @@
 import urllib3
 import json
 
-USER_AGENT = 'nymeria.py/1.0.1'
+USER_AGENT = 'nymeria.py/1.0.2'
 
 def request(endpoint, key='', version='v3', payload=None):
     headers = {
