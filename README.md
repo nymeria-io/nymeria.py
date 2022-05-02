@@ -71,8 +71,10 @@ if client.check_authentication():
 
   # Bulk Enrichment (pass n-queries to enrich)
 
-  client.enrich({ 'email': 'woz@steve.org' }, { 'url': 'github.com/dhh' }) # => dict (see below)
+  client.enrich({ 'email': 'woz@steve.org' }, { 'url': 'github.com/nymeriaio' }) # => dict (see below)
 ```
+
+#### Single Enrichment Response
 
 ```json
 {
@@ -95,10 +97,10 @@ if client.check_authentication():
         "domain": "woz.org",
         "address": "steve@woz.org"
       },
-			...
+      ...
     ],
     "phone_numbers": [
-			...
+      ...
     ],
     "social": [
       {
@@ -108,6 +110,61 @@ if client.check_authentication():
       }
     ]
   }
+}
+```
+
+#### Bulk Enrichment Response
+
+```json
+{
+  "usage": {
+    "used": 4,
+    "limit": 100
+  },
+  "data": [
+    {
+      'meta': {
+        'email': 'steve@woz.org'
+      },
+      'result': {
+        "bio": {
+          "first_name": "Steve",
+          "last_name": "Wozniak",
+          "title": "Chief Scientist",
+          "company": "Sandisk",
+          "company_website": "sandisk.com"
+        },
+        "emails": [
+          {
+            "type": "professional",
+            "name": "steve",
+            "domain": "woz.org",
+            "address": "steve@woz.org"
+          },
+          ...
+        ],
+        "phone_numbers": [
+          ...
+        ],
+        "social": [
+          {
+            "type": "linkedin",
+            "id": "wozniaksteve",
+            "url": "https://www.linkedin.com/in/wozniaksteve"
+          }
+        ]
+      }
+    },
+    {
+      'meta': {
+        'url': 'github.com/nymeriaio'
+      },
+      'result': {
+        ...
+      }
+    },
+    ...
+  ]
 }
 ```
 
