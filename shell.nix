@@ -11,6 +11,7 @@ pkgs.mkShell {
 
   nativeBuildInputs = with pkgs; [
     python310
+    # python2
     twine
   ];
 }

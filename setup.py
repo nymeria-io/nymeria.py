@@ -1,9 +1,8 @@
+from pathlib import Path
 from setuptools import setup
 
 import nymeria
 
-# read the contents of your README file
-from pathlib import Path
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
@@ -21,6 +20,6 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.9',
     ],
-    long_description=long_description,
     long_description_content_type='text/markdown'
+    long_description=long_description,
 )
