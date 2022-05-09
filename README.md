@@ -168,6 +168,39 @@ if client.check_authentication():
 }
 ```
 
+#### Search for People
+
+You can query Nymeria's people database for people that match a certain
+criteria. You can view previews for each person and "unlock" the complete
+profile.
+
+Currently, you can query using any of the following parameters:
+
+1. `q` a raw query which will match keywords in a person's name, title, skills,
+   etc.
+2. `first_name`
+3. `last_name`
+4. `title`
+5. `company`
+6. `skills` a comma separated list of skills.
+7. `location` city, state, country, etc.
+8. `country` matches country only.
+
+```python
+from nymeria import api
+
+client = api.Client('ny_apikey')
+
+if client.check_authentication():
+  # Query for people. Returns previews for each person.
+  previews = client.people({ 'q': 'Ruby on Rails' }) # => dict (see above)
+
+  # Given a person's UUID, unlock their details (including contact info).
+  people = client.reveal([ r['uuid'] for r in previews['data'] ])
+
+  print(people)
+```
+
 ## License
 
 MIT License
