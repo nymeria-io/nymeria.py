@@ -18,23 +18,17 @@ API](https://www.nymeria.io/developers) so you don't have to.
 $ pip install nymeria
 ```
 
-#### Setting and Checking an API Key.
+#### Setting up a Client
 
 ```python
 from nymeria import api
 
 client = api.Client('YOUR API KEY GOES HERE')
-
-client.check_authentication() # => True | False
 ```
 
 All actions that interact with the Nymeria service assume an API key has been
 set and will fail if a key hasn't been set. A key only needs to be set once and
 can be set at the start of your program.
-
-If you want to check a key's validity you can use the check_authentication
-function to verify the validity of a key that has been set. If no error is
-returned then the API key is valid.
 
 #### Verifying an Email Address
 
@@ -43,21 +37,7 @@ from nymeria import api
 
 client = api.Client('YOUR API KEY GOES HERE')
 
-client.verify('dev@nymeria.io') # => dict (see below)
-```
-
-```json
-{
-  'data': {
-    'result': 'catchall',
-    'tags': ['has_dns', 'has_dns_mx', 'smtp_connectable', 'accepts_all', 'has_dns']
-  },
-
-  'usage': {
-    'used': 861,
-    'limit': 10000
-  }
-}
+client.email.verify('dev@nymeria.io')
 ```
 
 You can verify the deliverability of an email address using Nymeria's service.
@@ -77,110 +57,16 @@ client = api.Client('YOUR API KEY GOES HERE')
 
 # Single Enrichment
 
-client.enrich({ 'url': 'linkedin.com/in/wozniaksteve' }) # => dict (see below)
+client.person.enrich({ 'profile': 'linkedin.com/in/wozniaksteve' }) # => dict (see below)
 
 # Bulk Enrichment (pass n-queries to enrich)
 
-client.enrich({ 'email': 'woz@steve.org' }, { 'url': 'github.com/nymeriaio' }) # => dict (see below)
-```
-
-#### Single Enrichment Response
-
-```json
-{
-  "usage": {
-    "used": 4,
-    "limit": 100
-  },
-  "data": {
-    "bio": {
-      "first_name": "Steve",
-      "last_name": "Wozniak",
-      "title": "Chief Scientist",
-      "company": "Sandisk",
-      "company_website": "sandisk.com"
-    },
-    "emails": [
-      {
-        "type": "professional",
-        "name": "steve",
-        "domain": "woz.org",
-        "address": "steve@woz.org"
-      },
-      ...
-    ],
-    "phone_numbers": [
-      ...
-    ],
-    "social": [
-      {
-        "type": "linkedin",
-        "id": "wozniaksteve",
-        "url": "https://www.linkedin.com/in/wozniaksteve"
-      }
-    ]
-  }
-}
-```
-
-#### Bulk Enrichment Response
-
-```json
-{
-  "usage": {
-    "used": 4,
-    "limit": 100
-  },
-  "data": [
-    {
-      'meta': {
-        'email': 'steve@woz.org'
-      },
-      'result': {
-        "bio": {
-          "first_name": "Steve",
-          "last_name": "Wozniak",
-          "title": "Chief Scientist",
-          "company": "Sandisk",
-          "company_website": "sandisk.com"
-        },
-        "emails": [
-          {
-            "type": "professional",
-            "name": "steve",
-            "domain": "woz.org",
-            "address": "steve@woz.org"
-          },
-          ...
-        ],
-        "phone_numbers": [
-          ...
-        ],
-        "social": [
-          {
-            "type": "linkedin",
-            "id": "wozniaksteve",
-            "url": "https://www.linkedin.com/in/wozniaksteve"
-          }
-        ]
-      }
-    },
-    {
-      'meta': {
-        'url': 'github.com/nymeriaio'
-      },
-      'result': {
-        ...
-      }
-    },
-    ...
-  ]
-}
+client.person.bulk_enrich([{ 'email': 'woz@steve.org' }, { 'profile': 'github.com/nymeriaio' }])
 ```
 
 You can enrich one or more profiles using the enrich function. The enrich
 function takes a dict, or an array of dicts. The most common dict keys
-to use are `url` and `email`.
+to use are `profile` and `email`.
 
 If you want to enrich an email address you can specify an email and the Nymeria
 service will locate the person and return all associated data for them.
@@ -222,43 +108,20 @@ from nymeria import api
 
 client = api.Client('YOUR API KEY GOES HERE')
 
-# Query for people. Returns previews for each person.
-previews = client.people({ 'q': 'Ruby on Rails' }) # => dict (see above)
-
-# Given a person's uuid, unlock their details (including contact info).
-people = client.reveal([ r['uuid'] for r in previews['data'] ])
-
-print(people)
+# Query for people.
+people = client.person.search({ 'query': 'skills:"Ruby on Rails"' })
 ```
-
-You can perform searches using Nymeria's database of people. The search works
-using two functions:
-
-1. `people` which performs a search and returns a preview of each person.
-1. `reveal` which takes uuids of people and returns complete profiles.
-
-Note, using people does not consume any credits but using reveal will
-consume credit for each profile that is revealed.
 
 The dict parameter enables you to specify your search criteria. In
 particular, you can specify:
 
-1. `q` for general keyword matching text.
-1. `location` to match a specific city or country.
-1. `company` to match a current company.
-1. `title` to match current titles.
-1. `has_email` if you only want to find people that have email addresses.
-1. `has_phone` if you only want to find people that has phone numbers.
-1. `skills` if you are looking to match specific skills.
+1. `query` for general keyword matching text.
+1. `size` for the number of results to return.
+1. `from` the number to begin pagination from (size+1).
 
 By default, 10 people will be returned for each page of search
 results. You can specify the page as part of your dict if you
 want to access additional pages of people.
-
-You can filter the search results and if you want to reveal the
-complete details you can do so by sending the uuids via reveal.
-Please note, credit will be consumed for each person that is
-revealed.
 
 ## License
 
