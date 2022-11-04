@@ -1,20 +1,22 @@
 import urllib3
 import json
 
-USER_AGENT = 'nymeria.py/1.0.3'
+USER_AGENT = 'nymeria.py/1.1.0'
 
-def request(endpoint, key='', version='v3', payload=None, method='POST', fields=None):
+def request(endpoint, key='', version='v4', payload=None, method='POST', fields=None):
     headers = {
             'User-Agent': USER_AGENT,
-            'Content-Type': 'application/json',
             'X-Api-Key': key,
     }
+
+    if method == 'POST':
+        headers['Content-Type'] = 'application/json'
 
     http = urllib3.PoolManager()
 
     body = None
 
-    if payload is not None:
+    if payload is not None and method == 'POST':
         body = json.dumps(payload).encode('utf-8')
 
     resp = http.request(
@@ -27,102 +29,53 @@ def request(endpoint, key='', version='v3', payload=None, method='POST', fields=
 
     return json.loads(resp.data)
 
-class Client:
+class Company:
     def __init__(self, api_key):
         self.key = api_key
 
-    """
-        Check your API Key. If the key is valid, this method returns True.
-        False is returned otherwise.
-    """
-    def check_authentication(self):
-        resp = request('/check-authentication', key=self.key)
+    def enrich(self, args):
+        return request('/company/enrich', key=self.key, method='GET', fields=args)
 
-        if 'status' in resp:
-            if resp['status'] == 'success':
-                return True
+    def search(self, args):
+        return request('/company/search', key=self.key, method='GET', fields=args)
 
-        return False
+class Email:
+    def __init__(self, api_key):
+        self.key = api_key
 
-    """
-        Enrich one or more records. A record can be enriched via a url, email or
-        an identifier. If enriching more than one records you can specify custom
-        attributes as well.
-    """
-    def enrich(self, *args):
-        if len(args) > 1:
-            resp = request('/bulk-enrich', key=self.key, payload={ 'people': args })
-
-            if 'status' in resp and 'data' in resp and 'usage' in resp:
-                if resp['status'] == 'success':
-                    return { 'status': 'success', 'data': resp['data'], 'usage': resp['usage'] }
-
-            message = 'An unknown error ocurred'
-
-            if 'developer_message' in resp:
-                message = resp['developer_message']
-
-            return { 'status': 'failure', 'message': message }
-        else:
-            for arg in args:
-                resp = request('/enrich', key=self.key, payload=arg)
-
-                if 'status' in resp and 'data' in resp and 'usage' in resp:
-                    if resp['status'] == 'success':
-                        return { 'status': 'success', 'data': resp['data'], 'usage': resp['usage'] }
-
-                if 'developer_message' in resp:
-                    message = resp['developer_message']
-
-                return { 'status': 'failure', 'message': message }
-
-    """
-        Determines the deliverability of an email address.
-    """
     def verify(self, email):
-        resp = request('/verify', key=self.key, payload={ 'email': email })
+        return request('/email/verify', key=self.key, method='GET', fields={ 'email': email })
 
-        if 'status' in resp and 'data' in resp and 'usage' in resp:
-            if resp['status'] == 'success':
-                return { 'data': resp['data'], 'usage': resp['usage'] }
+    def bulk_verify(self, args):
+        return request('/email/verify/bulk', key=self.key, method='POST', payload={ 'requests': args })
 
-        message = 'An unknown error ocurred'
+class Person:
+    def __init__(self, api_key):
+        self.key = api_key
 
-        if 'developer_message' in resp:
-            message = resp['developer_message']
+    def enrich(self, args):
+        return request('/person/enrich', key=self.key, method='GET', fields=args)
 
-        return { 'result': 'unknown', 'tags': [], 'message': message }
+    def bulk_enrich(self, args):
+        return request('/person/enrich/bulk', key=self.key, method='POST', payload={ 'requests': args })
 
-    """
-        Search for people using the query parameters.
-    """
-    def people(self, query):
-        resp = request('/people', key=self.key, fields=query, method='GET')
+    def search(self, args):
+        return request('/person/search', key=self.key, method='GET', fields=args)
 
-        if 'status' in resp:
-            if resp['status'] == 'success':
-                return { 'status': 'success', 'data': resp['data'] }
+    def retrieve(self, args):
+        return request('/person/retrieve/{0}'.format(args), key=self.key, method='GET', fields={})
 
-        message = 'An unknown error ocurred'
+    def bulk_retrieve(self, args):
+        return request('/person/retrieve/bulk', key=self.key, method='POST', payload={ 'requests': args })
 
-        if 'developer_message' in resp:
-            message = resp['developer_message']
+    def preview(self, args):
+        return request('/person/enrich/preview', key=self.key, method='GET', fields=args)
 
-        return { 'status': 'failure', 'data': [], 'message': message }
+    def identify(self, args):
+        return request('/person/identify', key=self.key, method='GET', fields=args)
 
-    """
-        Reveal will unlock people previews from "search".
-    """
-    def reveal(self, uuids):
-        resp = request('/people', key=self.key, payload={'uuids': uuids}, method='POST')
-
-        if 'status' in resp:
-            if resp['status'] == 'success':
-                return { 'status': 'success', 'data': resp['data'], 'usage': resp['usage'] }
-
-        message = 'An unknown error ocurred'
-
-        if 'developer_message' in resp:
-            message = resp['developer_message']
-
-        return { 'status': 'failure', 'data': [], 'message': message }
+class Client:
+    def __init__(self, api_key):
+        self.company = Company(api_key)
+        self.person = Person(api_key)
+        self.email = Email(api_key)
