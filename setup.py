@@ -10,7 +10,7 @@ setup(
     name='nymeria',
     version=nymeria.__version__,
     description='Discover contact details such as phone numbers, email addresses and social links using Nymeria\'s service.',
-    url='https://git.nymeria.io/nymeria.py',
+    url='https://github.com/nymeriaio/nymeria.py',
     author=nymeria.__author__,
     author_email='dev@nymeria.io',
     license='MIT',
