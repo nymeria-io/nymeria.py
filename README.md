@@ -15,7 +15,7 @@ API](https://www.nymeria.io/developers) so you don't have to.
 #### Installation
 
 ```bash
-$ pip install nymeria
+pip install nymeria
 ```
 
 #### Setting up a Client
