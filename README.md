@@ -8,7 +8,7 @@ You can use Nymeria to enrich data with contact information such as email
 addresses, phone numbers and social links. The python package wraps Nymeria's [public
 API](https://www.nymeria.io/developers) so you don't have to.
 
-![Nymeria makes finding contact details a breeze.](https://www.nymeria.io/assets/images/marquee.png)
+![Nymeria makes finding contact details a breeze.](https://www.nymeria.io/static/images/marquee.png)
 
 ## Usage
 
@@ -109,15 +109,21 @@ from nymeria import api
 client = api.Client('YOUR API KEY GOES HERE')
 
 # Query for people.
-people = client.person.search({ 'query': 'skills:"Ruby on Rails"' })
+people = client.person.search({ 'first_name': 'corey', 'last_name': 'prophitt' })
 ```
 
 The dict parameter enables you to specify your search criteria. In
 particular, you can specify:
 
-1. `query` for general keyword matching text.
-1. `size` for the number of results to return.
-1. `from` the number to begin pagination from (size+1).
+1. `first_name` 
+1. `last_name` 
+1. `title` 
+1. `company` 
+1. `location` 
+1. `country` 
+1. `industry` 
+1. `limit` for the number of results to return.
+1. `offset` the offset from the base results..
 
 By default, 10 people will be returned for each page of search
 results. You can specify the page as part of your dict if you
@@ -127,7 +133,7 @@ want to access additional pages of people.
 
 MIT License
 
-Copyright (c) 2022, Nymeria LLC.
+Copyright (c) 2025, Nymeria LLC.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
