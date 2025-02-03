@@ -1,7 +1,7 @@
 import urllib3
 import json
 
-USER_AGENT = 'nymeria.py/1.1.0'
+USER_AGENT = 'nymeria.py/1.2.0'
 
 def request(endpoint, key='', version='v4', payload=None, method='POST', fields=None):
     headers = {
@@ -70,9 +70,6 @@ class Person:
 
     def preview(self, args):
         return request('/person/enrich/preview', key=self.key, method='GET', fields=args)
-
-    def identify(self, args):
-        return request('/person/identify', key=self.key, method='GET', fields=args)
 
 class Client:
     def __init__(self, api_key):
