@@ -61,7 +61,11 @@ client.person.enrich({ 'profile': 'linkedin.com/in/wozniaksteve' }) # => dict (s
 
 # Bulk Enrichment (pass n-queries to enrich)
 
-client.person.bulk_enrich([{ 'email': 'woz@steve.org' }, { 'profile': 'github.com/nymeriaio' }])
+people = client.person.bulk_enrich([
+    { 'params': { 'email': 'someone@somewhere.com' } }, 
+    { 'params': { 'profile': 'github.com/dhh' } },
+    { 'params': { 'profile': 'linkedin.com/in/wozniaksteve' } },
+])
 ```
 
 You can enrich one or more profiles using the enrich function. The enrich
@@ -108,8 +112,11 @@ from nymeria import api
 
 client = api.Client('YOUR API KEY GOES HERE')
 
-# Query for people.
-people = client.person.search({ 'first_name': 'corey', 'last_name': 'prophitt' })
+people = client.person.search({ 
+    'company': 'nymeria',
+    'title': 'founder', 
+    'limit': 1
+})
 ```
 
 The dict parameter enables you to specify your search criteria. In
